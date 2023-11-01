@@ -27,40 +27,62 @@
 GLubyte ptex[kTextureSize][kTextureSize][3];
 const float ringDensity = 20.0;
 
+//LAB1.1 = Have changed freq, color and pos
+
 // Example: Radial pattern.
 void maketexture()
 {
 	int x, y;
 	float fx, fy, fxo, fyo;
 	char val;
+	float center_x = kTextureSize/1.25;
+	float center_y = kTextureSize/4.75;
 
 	for (x = 0; x < kTextureSize; x++)
 	for (y = 0; y < kTextureSize; y++)
 	{
-		fx = (float)(x-kTextureSize/2.)/kTextureSize*2.;
-		fy = (float)(y-kTextureSize/2.)/kTextureSize*2.;
+	    // Normalizes x and y coords, range [-1,1]
+		fx = (float)(x-center_x)/kTextureSize*2.;
+		fy = (float)(y-center_y)/kTextureSize*2.;
+
+		// Distance form the center
 		fxo = sqrt(fx*fx+fy*fy);
 		fyo = sqrt(fx*fx+fy*fy);
-		fxo = cos(fxo * ringDensity);
-		fyo = sin(fyo * ringDensity);
-		if (fxo > 1.0) fxo = 1;
+
+		// Apply a cosine and sine function to distort the texture
+		fxo = cos((fxo * ringDensity)/2);
+		fyo = sin((fyo * ringDensity)/2);
+
+		// Clamping
+		if (fxo > 1.0) fxo = 1.0;
 		if (fxo < -1.0) fxo = -1.0;
 		if (fyo > 1.0) fyo = 1.0;
 		if (fyo < -1.0) fyo = -1.0;
-		ptex[x][y][0] = fxo * 127 + 127;
-		ptex[x][y][1] = fyo * 127 + 127;
-		ptex[x][y][2] = 128;
+
+        /*
+		// Color channels (Crazy stuff)
+		ptex[x][y][0] = fxo * 127 + 127; //R
+		ptex[x][y][1] = fyo * 127 + 127; //G
+		ptex[x][y][2] = (fxo * fyo)*128; //B */
+
+		// Color channels (Green and blue fade)
+		ptex[x][y][0] = 0; //R
+		ptex[x][y][1] = fxo * 32 + 191; //G
+		ptex[x][y][2] = fyo * 32 + 191; //B
 	}
 }
 
 // Globals
 // Data would normally be read from files
+
 vec3 vertices[] = { {-1.0f,-1.0f,0.0f},
 					{1.0f,-1.0f,0.0f},
 					{1.0f,1.0f,0.0f},
 					{-1.0f,1.0f,0.0f},
 					{1.0f,1.0f,0.0f},
 					{1.0f,-1.0f,0.0f} };
+
+
 vec2 texCoords[] = {{0.0f,0.0f},
 					{1.0f,0.0f},
 					{1.0f,1.0f},
