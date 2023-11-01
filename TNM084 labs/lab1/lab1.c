@@ -5,8 +5,6 @@
 
 // For the CPU part, you should primarily work in maketexture() below.
 
-// Korvkaka är livet
-
 //uses framework Cocoa
 //uses framework OpenGL
 #define MAIN
