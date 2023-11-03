@@ -27,50 +27,61 @@
 GLubyte ptex[kTextureSize][kTextureSize][3];
 const float ringDensity = 20.0;
 
-//LAB1.1 = Have changed freq, color and pos
+//LAB1.2 = Create a pattern (brick etc)
 
 // Example: Radial pattern.
 void maketexture()
 {
-	int x, y;
-	float fx, fy, fxo, fyo;
-	char val;
-	float center_x = kTextureSize/1.25;
-	float center_y = kTextureSize/4.75;
+    int x, y; // x is vertical, y is horizontal
+    int brickWidth = 30;
+    int brickHeight = 15;
+    int counter = 0;
+    int isOffset = 0;
+    int isBrickY = 0;
+    int isBrickX = 0;
+    int offset = 20;
 
-	for (x = 0; x < kTextureSize; x++)
-	for (y = 0; y < kTextureSize; y++)
-	{
-	    // Normalizes x and y coords, range [-1,1]
-		fx = (float)(x-center_x)/kTextureSize*2.;
-		fy = (float)(y-center_y)/kTextureSize*2.;
+    for (x = 0; x < kTextureSize; x++) {
+        for (y = 0; y < kTextureSize; y++) {
 
-		// Distance form the center
-		fxo = sqrt(fx*fx+fy*fy);
-		fyo = sqrt(fx*fx+fy*fy);
+            // odd rows
+            if(counter == brickHeight) {
+                isOffset = 1; // true
+            }
+            // even rows
+            else if (counter == (brickHeight * 2)) {
+                isOffset = 0; // false
+                counter = 0;
+            }
 
-		// Apply a cosine and sine function to distort the texture
-		fxo = cos((fxo * ringDensity)/2);
-		fyo = sin((fyo * ringDensity)/2);
+            // add offset to even rows
+            if(isOffset) {
+                isBrickY = (y + offset) % brickWidth;
+            }
+            // do not add offset to odd rows
+            else {
+                isBrickY = y % brickWidth;
+            }
 
-		// Clamping
-		if (fxo > 1.0) fxo = 1.0;
-		if (fxo < -1.0) fxo = -1.0;
-		if (fyo > 1.0) fyo = 1.0;
-		if (fyo < -1.0) fyo = -1.0;
+            // adds brick texture vertically
+            isBrickX = x % brickHeight;
 
-        /*
-		// Color channels (Crazy stuff)
-		ptex[x][y][0] = fxo * 127 + 127; //R
-		ptex[x][y][1] = fyo * 127 + 127; //G
-		ptex[x][y][2] = (fxo * fyo)*128; //B */
-
-		// Color channels (Green and blue fade)
-		ptex[x][y][0] = 0; //R
-		ptex[x][y][1] = fxo * 32 + 191; //G
-		ptex[x][y][2] = fyo * 32 + 191; //B
-	}
+            if (isBrickX && isBrickY) {
+                // Brick color
+                ptex[x][y][0] = 128; // R (Red)
+                ptex[x][y][1] = 64; // G (Green)
+                ptex[x][y][2] = 64; // B (Blue)
+            } else {
+                // Mortar color
+                ptex[x][y][0] = 200; // R (Red)
+                ptex[x][y][1] = 200; // G (Green)
+                ptex[x][y][2] = 200; // B (Blue)
+            }
+        }
+        counter++;
+    }
 }
+
 
 // Globals
 // Data would normally be read from files
