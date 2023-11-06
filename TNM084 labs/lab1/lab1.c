@@ -29,6 +29,10 @@ const float ringDensity = 20.0;
 
 //LAB1.2 = Create a pattern (brick etc)
 
+float fractionalPart(float number) {
+    return number - (int)number;
+}
+
 // Example: Radial pattern.
 void maketexture()
 {
@@ -67,10 +71,15 @@ void maketexture()
             isBrickX = x % brickHeight;
 
             if (isBrickX && isBrickY) {
+
+                // Truncated trigonometric noise
+                float seed = x * y;
+                float noise = fractionalPart(fabs(sin(seed) * 1000000));
+
                 // Brick color
-                ptex[x][y][0] = 128; // R (Red)
-                ptex[x][y][1] = 64; // G (Green)
-                ptex[x][y][2] = 64; // B (Blue)
+                ptex[x][y][0] = 128 + 50 * noise; // R (Red)
+                ptex[x][y][1] = 64 + 25 * noise; // G (Green)
+                ptex[x][y][2] = 64 + 25 * noise; // B (Blue)
             } else {
                 // Mortar color
                 ptex[x][y][0] = 200; // R (Red)
