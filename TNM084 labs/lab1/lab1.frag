@@ -82,10 +82,11 @@ void main(void)
 	if (displayGPUversion == 0)
 	{
         // Calculate the sinusoidal color value
-        float color = 0.5 * sin(time) + 0.5;
+        float scaledTime = 0.5 * sin(time) + 0.5;
 
-        // Output the color
-        out_Color = vec4(1.0, color, color, 1.0);
+        vec2 f = texCoord * 2.0 - vec2(1.0);
+		float radius = length(f); // Same as sqrt(fx*fx + fy * fy);
+		out_Color = vec4(cos(radius * ringDensity * scaledTime)/ 2.0 + 0.5, 0.5, sin(radius * ringDensity * scaledTime)/ 2.0 + 0.5, 1.0);
 	}
 	else
 		out_Color = texture(tex, texCoord);
