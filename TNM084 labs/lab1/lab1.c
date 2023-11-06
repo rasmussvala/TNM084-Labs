@@ -75,6 +75,7 @@ void maketexture()
                 // Truncated trigonometric noise
                 float seed = x * y;
                 float noise = fractionalPart(fabs(sin(seed) * 1000000));
+                noise = noise2((float)x / 10.0, (float)y / 10.0);
 
                 // Brick color
                 ptex[x][y][0] = 128 + 50 * noise; // R (Red)
