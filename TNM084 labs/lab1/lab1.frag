@@ -78,11 +78,37 @@ float iqnoise( in vec2 x, float u, float v )
 
 void main(void)
 {
-	if (displayGPUversion == 1)
+	if (displayGPUversion == 0)
 	{
-		vec2 f = texCoord * 2.0 - vec2(1.0);
-		float radius = length(f); // Same as sqrt(fx*fx + fy * fy);
-		out_Color = vec4(cos(radius * ringDensity)/ 2.0 + 0.5, 0.5, sin(radius * ringDensity)/ 2.0 + 0.5, 1.0);
+        float x = texCoord.x;
+        float y = texCoord.y;
+        float r = 0.0, g = 0.0, b = 0.0;
+        float brickWidth = 0.029296875;
+        float brickHeight = 0.05859375;
+        int counter = 0;
+        int isOffset = 0;
+        float isBrickY = 0.0;
+        float isBrickX = 0.0;
+        float brickOffset = 0.0390625;
+        const float EPSILONX = 0.045;
+        const float EPSILONY = 0.020;
+
+        isBrickX = mod(x, brickHeight);
+        isBrickY = mod(y, brickWidth);
+
+        if ((isBrickX <= EPSILONX) && (isBrickY <= EPSILONY)) {
+                // Brick color
+                r = 0.5; // R (Red)
+                g = 0.25; // G (Green)
+                b = 0.25; // B (Blue)
+        } else {
+                // Mortar color
+                r = 0.78; // R (Red)
+                g = 0.78; // G (Green)
+                b = 0.78; // B (Blue)
+        }
+
+		out_Color = vec4(r, g, b, 1.0);
 	}
 	else
 		out_Color = texture(tex, texCoord);
