@@ -180,6 +180,10 @@ void display(void)
 {
 	printError("pre display");
 
+	float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+
+    glUniform1f(glGetUniformLocation(program, "time"), time);
+
 	// clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -197,6 +201,7 @@ int main(int argc, char *argv[])
 	glutInitWindowSize(kTextureSize, kTextureSize);
 	glutCreateWindow ("Lab 1");
 	glutDisplayFunc(display);
+	glutRepeatingTimer(20);
 	glutKeyboardFunc(key);
 	init ();
 	glutMainLoop();

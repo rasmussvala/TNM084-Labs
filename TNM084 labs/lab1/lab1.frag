@@ -10,6 +10,7 @@ uniform sampler2D tex;
 
 uniform int displayGPUversion;
 uniform float ringDensity;
+uniform float time;
 
 //const float ringDensity = 10.0;
 
@@ -80,35 +81,11 @@ void main(void)
 {
 	if (displayGPUversion == 0)
 	{
-        float x = texCoord.x;
-        float y = texCoord.y;
-        float r = 0.0, g = 0.0, b = 0.0;
-        float brickWidth = 0.029296875;
-        float brickHeight = 0.05859375;
-        int counter = 0;
-        int isOffset = 0;
-        float isBrickY = 0.0;
-        float isBrickX = 0.0;
-        float brickOffset = 0.0390625;
-        const float EPSILONX = 0.045;
-        const float EPSILONY = 0.020;
+        // Calculate the sinusoidal color value
+        float color = 0.5 * sin(time) + 0.5;
 
-        isBrickX = mod(x, brickHeight);
-        isBrickY = mod(y, brickWidth);
-
-        if ((isBrickX <= EPSILONX) && (isBrickY <= EPSILONY)) {
-                // Brick color
-                r = 0.5; // R (Red)
-                g = 0.25; // G (Green)
-                b = 0.25; // B (Blue)
-        } else {
-                // Mortar color
-                r = 0.78; // R (Red)
-                g = 0.78; // G (Green)
-                b = 0.78; // B (Blue)
-        }
-
-		out_Color = vec4(r, g, b, 1.0);
+        // Output the color
+        out_Color = vec4(1.0, color, color, 1.0);
 	}
 	else
 		out_Color = texture(tex, texCoord);
