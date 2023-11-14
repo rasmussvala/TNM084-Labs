@@ -86,6 +86,22 @@ GLuint indices2[] = {	0,3,2, 0,2,1};
 
 // THIS IS WHERE YOUR WORK GOES!
 
+void makeBranch(int aSlices, float height, float topwidth, float bottomwidth) {
+
+    // Base case not working, returns after one turn
+    if(topwidth < 0.001) {
+        return;
+    }
+
+    gluggTranslate(0.0, height, 0.0);
+
+	gluggRotate(M_PI/2.0, 1.0f, 0.0f, 0.0f);
+
+	// add code: translate to the end of the branch
+
+    MakeCylinderAlt(aSlices, height*0.8, topwidth*0.5, topwidth);
+}
+
 gluggModel MakeTree()
 {
 	gluggSetPositionName("inPosition");
@@ -97,7 +113,17 @@ gluggModel MakeTree()
 	// Between gluggBegin and gluggEnd, call MakeCylinderAlt plus glugg transformations
 	// to create a tree.
 
-	MakeCylinderAlt(20, 2, 0.1, 0.15);
+
+	// tree stats
+    int aSlices = 20;
+    float height = 4;
+    float topwidth = 0.4;
+    float bottomwidth = 0.6;
+
+	// The root
+	MakeCylinderAlt(aSlices, height, topwidth, bottomwidth);
+
+	makeBranch(aSlices, height, topwidth, bottomwidth);
 
 	return gluggBuildModel(0);
 }
