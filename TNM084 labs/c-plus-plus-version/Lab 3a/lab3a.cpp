@@ -87,32 +87,40 @@ GLuint indices2[] = {	0,3,2, 0,2,1};
 // THIS IS WHERE YOUR WORK GOES!
 
 void makeBranch(int aSlices, float height, float topwidth, int depth, int nrOfBranches) {
-
     // Base case
     if(depth <= 0) {
         return;
     }
 
-    // gluggRotate(angle, x, y, z)
+    // Calculate the angle offset for equally spaced branches
+    float angleOffset = 2 * M_PI / nrOfBranches;
+
+    // Calculate the initial rotation angle to start the branches
+    float initialAngle = M_PI / 6.0f; // 45 degrees in radians
 
     for(int i = 0; i < nrOfBranches; ++i) {
         // Save the coordinate system
         gluggPushMatrix();
 
-        gluggRotate(M_PI/2 * i, 0.0f, 1.0f, 0.0f);
+        // Calculate the rotation angle for this branch
+        float rotationAngle = initialAngle + angleOffset * i;
 
-        gluggRotate(M_PI/4, 1.0f, 0.0f, 0.0f);
+        // Apply the rotation around the vertical axis
+        gluggRotate(rotationAngle, 0.0f, 1.0f, 0.0f);
+
+        // Apply rotation to achieve a 45-degree outward angle from the tree body
+        gluggRotate(M_PI / 6.0f, 1.0f, 0.0f, 0.0f);
 
         // Create the branch
-        MakeCylinderAlt(aSlices, height, topwidth*0.5, topwidth);
+        MakeCylinderAlt(aSlices, height, topwidth * 0.5, topwidth);
 
         // Translate to the top of the branch to create new branches
         gluggTranslate(0.0, height, 0.0);
 
         // Create new branches
-        makeBranch(aSlices, height*0.8, topwidth*0.5, --depth, nrOfBranches);
+        makeBranch(aSlices, height * 0.7, topwidth * 0.4, depth-1, nrOfBranches);
 
-        // Revert back to the coordinate system that is saved in the beginning
+        // Restore the coordinate system
         gluggPopMatrix();
     }
 }
