@@ -102,11 +102,15 @@ void makeBranch(int aSlices, float height, float topwidth, int depth, int nrOfBr
         // Save the coordinate system
         gluggPushMatrix();
 
-        // Calculate the rotation angle for this branch
+        // Calculate the rotation angle for this branch with Z-axis randomness
         float rotationAngle = initialAngle + angleOffset * i;
 
-        // Apply the rotation around the vertical axis
-        gluggRotate(rotationAngle, 0.0f, 1.0f, 0.0f);
+        // Apply randomness to the rotation around the Z-axis
+        float zRandomness = ((float)rand() / RAND_MAX) * 0.3f - 0.15f; // Adjust the Z-axis randomness range
+        rotationAngle += zRandomness;
+
+        // Apply the rotation around the vertical axis with randomness on Z-axis
+        gluggRotate(rotationAngle, 0.0f, 1.0f, zRandomness);
 
         // Apply rotation to achieve a 45-degree outward angle from the tree body
         gluggRotate(M_PI / 6.0f, 1.0f, 0.0f, 0.0f);
@@ -118,7 +122,7 @@ void makeBranch(int aSlices, float height, float topwidth, int depth, int nrOfBr
         gluggTranslate(0.0, height, 0.0);
 
         // Create new branches
-        makeBranch(aSlices, height * 0.7, topwidth * 0.4, depth-1, nrOfBranches);
+        makeBranch(aSlices, height * 0.7, topwidth * 0.4, depth - 1, nrOfBranches);
 
         // Restore the coordinate system
         gluggPopMatrix();
@@ -139,8 +143,8 @@ gluggModel MakeTree()
 
 	// tree stats
     int aSlices = 20;
-    int depth = 6;
-    int nrOfBranches = 3;
+    int depth = 5;
+    int nrOfBranches = 4;
     float height = 2;
     float topwidth = 0.3;
     float bottomwidth = 0.5;
