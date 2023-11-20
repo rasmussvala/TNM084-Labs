@@ -57,8 +57,11 @@ void MakeTerrain()
 		#define bumpWidth 2.0
 
 		// squared distance to center
-		float h = ( (x - kTerrainSize/2)/bumpWidth * (x - kTerrainSize/2)/bumpWidth +  (z - kTerrainSize/2)/bumpWidth * (z - kTerrainSize/2)/bumpWidth );
-		float y = MAX(0, 3-h) * bumpHeight;
+		// float h = ( (x - kTerrainSize/2)/bumpWidth * (x - kTerrainSize/2)/bumpWidth +  (z - kTerrainSize/2)/bumpWidth * (z - kTerrainSize/2)/bumpWidth );
+		// float y = MAX(0, 3-h) * bumpHeight;
+		float freqX = 0.05;
+		float freqZ = 0.05;
+		float y = snoise2(x * freqX,z * freqZ) * 2.0;
 
 		vertices[ix] = vec3(x * kPolySize, y, z * kPolySize);
 		texCoords[ix] = vec2(x, z);
@@ -87,7 +90,30 @@ void MakeTerrain()
 	for (int x = 0; x < kTerrainSize; x++)
 	for (int z = 0; z < kTerrainSize; z++)
 	{
-		normals[z * kTerrainSize + x] = SetVec3(0,1,0);
+        // We are positioned in the middle of the terrain
+	    if(x < kTerrainSize - 1 || x > kTerrainSize + 1 &&
+         z < kTerrainSize - 1 || z > kTerrainSize + 1) {
+
+            // Calculating the vertices
+            int center = z * kTerrainSize + x;
+            int top = (z-1) * kTerrainSize + x;
+            int bottom = (z+1) * kTerrainSize + x;
+            int left = z * kTerrainSize + (x+1);
+            int right = z * kTerrainSize + (x-1);
+
+            vec3 vec1 = vertices[bottom] - vertices[top];
+            vec3 vec2 = vertices[right] - vertices[left];
+
+            // Calculate the normal vector using the cross product
+            vec3 normal = normalize(cross(vec1, vec2));
+
+            // Set the normal for the current vertex
+            normals[center] = normal;
+	    }
+	    // We are positioned in the edges of the terrain
+	    else {
+            // add code to handle corners and edges
+	    }
 	}
 }
 
