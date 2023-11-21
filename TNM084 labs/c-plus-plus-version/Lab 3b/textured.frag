@@ -6,44 +6,33 @@ in vec2 texCoord;
 in vec3 exNormal;
 uniform sampler2D tex;
 
-// Function to generate Perlin noise
-float random(vec2 st) {
-    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-}
-
-float noise(vec2 st) {
-    vec2 i = floor(st);
-    vec2 f = fract(st);
-
-    // Smooth the interpolation
-    vec2 u = f * f * (3.0 - 2.0 * f);
-
-    return mix(mix(random(i), random(i + vec2(1.0, 0.0)), u.x),
-               mix(random(i + vec2(0.0, 1.0)), random(i + vec2(1.0)), u.x), u.y);
-}
-
 void main(void)
 {
     // Texture from disc
     vec4 t = texture(tex, texCoord);
 
-    // Generate a marble-like pattern
-    float frequency = 5.0;
-    float distortion = 3.0;
-    float time = 10.0;
+    // Calculate checkerboard pattern
+    int numSquares = 1; // Number of squares per side
+    float squareSize = 1.0 / float(numSquares);
 
-    float xDistort = sin(texCoord.s * frequency + time) * distortion;
-    float yDistort = cos(texCoord.t * frequency + time) * distortion;
+    int xSquare = int(texCoord.s / squareSize);
+    int ySquare = int(texCoord.t / squareSize);
 
-    vec2 distortedCoords = vec2(texCoord.s + xDistort, texCoord.t + yDistort);
+    bool isDark = mod(xSquare + ySquare, 2) == 0;
 
-    float marble = sin(distortedCoords.s + distortedCoords.t + noise(distortedCoords) * 5.0);
+    // Set colors for the checkerboard pattern
+    vec3 darkColor = vec3(0.1, 0.1, 0.1);
+    vec3 lightColor = vec3(0.9, 0.9, 0.9);
+
+    // Choose color based on the square position
+    vec3 checkerColor = isDark ? darkColor : lightColor;
 
     // Lighting calculation
     vec3 n = normalize(exNormal);
     float shade = n.y + n.z;
 
-    // Apply the procedural marble pattern with shading
-    outColor = vec4(vec3(marble) * shade * shade, 1.0); // Over-emphasized fake light
+    // Apply the checkerboard pattern with shading
+    outColor = vec4(checkerColor * shade * shade, 1.0); // Over-emphasized fake light
 }
+
 

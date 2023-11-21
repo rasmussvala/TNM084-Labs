@@ -90,30 +90,21 @@ void MakeTerrain()
 	for (int x = 0; x < kTerrainSize; x++)
 	for (int z = 0; z < kTerrainSize; z++)
 	{
-        // We are positioned in the middle of the terrain
-	    if(x < kTerrainSize - 1 || x > kTerrainSize + 1 &&
-         z < kTerrainSize - 1 || z > kTerrainSize + 1) {
+        // Calculating the vertices using ternary conditional operator
+        int center = z * kTerrainSize + x;
+        int top = (z - 1 < 0) ? center : (z - 1) * kTerrainSize + x;
+        int bottom = (z + 1 >= kTerrainSize) ? center : (z + 1) * kTerrainSize + x;
+        int left = (x + 1 >= kTerrainSize) ? center : z * kTerrainSize + (x + 1);
+        int right = (x - 1 < 0) ? center : z * kTerrainSize + (x - 1);
 
-            // Calculating the vertices
-            int center = z * kTerrainSize + x;
-            int top = (z-1) * kTerrainSize + x;
-            int bottom = (z+1) * kTerrainSize + x;
-            int left = z * kTerrainSize + (x+1);
-            int right = z * kTerrainSize + (x-1);
+        vec3 vec1 = vertices[bottom] - vertices[top];
+        vec3 vec2 = vertices[right] - vertices[left];
 
-            vec3 vec1 = vertices[bottom] - vertices[top];
-            vec3 vec2 = vertices[right] - vertices[left];
+        // Calculate the normal vector using the cross product
+        vec3 normal = normalize(cross(vec1, vec2));
 
-            // Calculate the normal vector using the cross product
-            vec3 normal = normalize(cross(vec1, vec2));
-
-            // Set the normal for the current vertex
-            normals[center] = normal;
-	    }
-	    // We are positioned in the edges of the terrain
-	    else {
-            // add code to handle corners and edges
-	    }
+        // Set the normal for the current vertex
+        normals[center] = normal;
 	}
 }
 
